@@ -1,0 +1,50 @@
+---
+- name: All topic tasks
+  hosts: webserver
+  vars:
+    package:
+      - tree
+      - screen
+      - vsftpd
+  tasks:
+    - name: installing  pacakge using loops
+      apt:
+        name: "{{ item }}"
+        state: present
+      loop: "{{ package }}"
+    - name: Create /var/www directory
+      file:
+        path: /var/www
+        state: directory
+
+    - name: Create /var/www/html directory
+      file:
+        path: /var/www/html
+        state: directory
+
+    - name: Create index.html file
+      copy:
+        content: "<html><head><title>My Website</title></head><body><h1>Welcome to my website</h1></body></html>"
+        dest: /var/www/html/index.html
+    - name: copy content in html file
+      lineinfile:
+        path: /var/www/html/index.html
+        line: '<p> Hello Deepa This side </p>'
+    - name: create file in home directory
+      file:
+        path: /home/1.txt
+        state: touch
+    - name: crate another file
+      file:
+        path: /home/2.txt
+        state: touch
+    - name: copy file
+      copy:
+        src: /etc/fstab
+        dest: /home/fstab.org
+    - name: get date from hosts
+      command: date
+    - name: finding cpu and ram
+      debug:
+        msg: "CPU: {{ ansible_processor_vcpus }} , RAM: {{ ansible_memtotal_mb }}"
+...
