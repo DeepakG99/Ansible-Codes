@@ -1,0 +1,39 @@
+---
+- name: Set Threshold Variable
+
+  hosts: localhost
+
+  gather_facts: no
+
+  vars:
+    result: 0
+
+  vars_prompt:
+    - name: first_limit
+      prompt: "Enter starting line number"
+      private: no
+
+    - name: second_limit
+      prompt: "Enter line number till you want to check"
+      private: no
+    
+
+
+  tasks:
+    - name: add csv file 
+      set_fact:
+        csv_data: "{{ lookup('file', 'myfile.csv') }}"
+
+    - name: applying condition to make thresold value 1
+      set_fact:
+        result: 1
+      loop: "{{ csv_data.split('\n')[ first_limit | int - 1 : second_limit | int ] | list }}"
+      when: item.find('*') != -1
+      
+
+    - name: print result 
+      debug:
+        msg: "{{ result }}"
+
+
+
